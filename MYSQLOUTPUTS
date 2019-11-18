@@ -1,0 +1,423 @@
+
+SQL> create table user_role(user_name varchar2(20) primary key, password varchar2(12), role_code varchar2(20));
+
+Table created.
+
+SQL> create table accounts(account_number number(10) primary key,insured_name varchar2(30), user_name varchar2(20),constraint fk_user foreign key (user_name) REFERENCES user_role(user_name));
+
+Table created.
+
+SQL> create table policy (policy_number number(10) primary key,policy_type varchar2(20), policy_premium decimal(15,4), account_number number(10),constraint fk_account_number foreign key (account_number) REFERENCES accounts(account_number));
+
+Table created.
+
+SQL> create table policy_details (policy_number number(10), claim_number number(10) ,question_id number(10), answer varchar2(30),constraint fk_policy_number FOREIGN KEY (policy_number) REFERENCES policy(policy_number));
+
+Table created.
+
+SQL> create table claim(claim_number number(10) primary key, claim_reason varchar2(30), accident_location_street varchar2(40), accident_city varchar2(15),accident_state varchar2(15), accident_zip number(5), claim_type varchar2(30), policy_number number(10), constraint fk_policy FOREIGN KEY (policy_number) REFERENCES policy(policy_number));
+
+Table created.
+
+SQL> create table claim_questions(ques_id number(10) primary key, policy_type varchar2(20),ques_desc varchar2(80),ques_ans1 varchar2(30),ques_ans2 varchar2(30));
+
+Table created.
+
+SQL> desc user_role;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ USER_NAME                                 NOT NULL VARCHAR2(20)
+ PASSWORD                                           VARCHAR2(12)
+ ROLE_CODE                                          VARCHAR2(20)
+
+SQL> desc accounts;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ACCOUNT_NUMBER                            NOT NULL NUMBER(10)
+ INSURED_NAME                                       VARCHAR2(30)
+ USER_NAME                                          VARCHAR2(20)
+
+SQL> desc cliam;
+ERROR:
+ORA-04043: object cliam does not exist
+
+
+SQL> desc claim;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CLAIM_NUMBER                              NOT NULL NUMBER(10)
+ CLAIM_REASON                                       VARCHAR2(30)
+ ACCIDENT_LOCATION_STREET                           VARCHAR2(40)
+ ACCIDENT_CITY                                      VARCHAR2(15)
+ ACCIDENT_STATE                                     VARCHAR2(15)
+ ACCIDENT_ZIP                                       NUMBER(5)
+ CLAIM_TYPE                                         VARCHAR2(30)
+ POLICY_NUMBER                                      NUMBER(10)
+
+SQL> desc policy;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ POLICY_NUMBER                             NOT NULL NUMBER(10)
+ POLICY_TYPE                                        VARCHAR2(20)
+ POLICY_PREMIUM                                     NUMBER(15,4)
+ ACCOUNT_NUMBER                                     NUMBER(10)
+
+SQL> desc policy_details;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ POLICY_NUMBER                                      NUMBER(10)
+ CLAIM_NUMBER                                       NUMBER(10)
+ QUESTION_ID                                        NUMBER(10)
+ ANSWER                                             VARCHAR2(30)
+
+SQL> desc claim_questions;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ QUES_ID                                   NOT NULL NUMBER(10)
+ POLICY_TYPE                                        VARCHAR2(20)
+ QUES_DESC                                          VARCHAR2(80)
+ QUES_ANS1                                          VARCHAR2(30)
+ QUES_ANS2                                          VARCHAR2(30)
+
+SQL> drop sequence policy_number_seq;
+
+Sequence dropped.
+
+SQL> drop sequence account_number_seq;
+
+Sequence dropped.
+
+SQL> drop sequence claim_number_seq;
+
+Sequence dropped.
+
+SQL> drop sequence question_number_seq;
+
+Sequence dropped.
+
+SQL> create sequence policy_number_seq start with 10027;
+
+Sequence created.
+
+SQL> drop sequence policy_number_seq;
+
+Sequence dropped.
+
+SQL> create sequence policy_number_seq start with 10001;
+
+Sequence created.
+
+SQL> create sequence account_number_seq start with 2010414416;
+
+Sequence created.
+
+SQL> create sequence claim_number_seq start with 2001;
+
+Sequence created.
+
+SQL> create sequence question_number_seq start with 11;
+
+Sequence created.
+
+SQL> insert into user_role values('Steve','Steve123','CLAIM ADJUSTER');
+
+1 row created.
+
+SQL> insert into user_role values('Michael','Michael123','INSURED');
+
+1 row created.
+
+SQL> insert into user_role values('David','David123','CLAIM HANDLER');
+
+1 row created.
+
+SQL> select * from user_role;
+
+USER_NAME            PASSWORD     ROLE_CODE
+-------------------- ------------ --------------------
+Steve                Steve123     CLAIM ADJUSTER
+Michael              Michael123   INSURED
+David                David123     CLAIM HANDLER
+
+SQL>  insert into accounts values(account_number_seq.nextval,'Michael','David');
+
+1 row created.
+
+SQL> select * from accounts;
+
+ACCOUNT_NUMBER INSURED_NAME                   USER_NAME
+-------------- ------------------------------ --------------------
+    2010414416 Michael                        David
+
+SQL> insert into policy values(policy_number_seq.nextval,'AUTOMOBILE',25000,2010414416);
+
+1 row created.
+
+SQL> select * from policy;
+
+POLICY_NUMBER POLICY_TYPE          POLICY_PREMIUM ACCOUNT_NUMBER
+------------- -------------------- -------------- --------------
+        10001 AUTOMOBILE                    25000     2010414416
+
+SQL> select * from user_role;
+
+USER_NAME            PASSWORD     ROLE_CODE
+-------------------- ------------ --------------------
+Steve                Steve123     CLAIM ADJUSTER
+Michael              Michael123   INSURED
+David                David123     CLAIM HANDLER
+
+SQL> insert into user_role values('Anderson','Anderson123','INSURED');
+
+1 row created.
+
+SQL> insert into user_role values('Harden','Harden123','INSURED');
+
+1 row created.
+
+SQL> insert into user_role values('Diksha','Diksha123','INSURED');
+
+1 row created.
+
+SQL> select * from user_role;
+
+USER_NAME            PASSWORD     ROLE_CODE
+-------------------- ------------ --------------------
+Steve                Steve123     CLAIM ADJUSTER
+Michael              Michael123   INSURED
+David                David123     CLAIM HANDLER
+Anderson             Anderson123  INSURED
+Harden               Harden123    INSURED
+Diksha               Diksha123    INSURED
+
+6 rows selected.
+
+SQL> insert into user_role values('Lebron','Lebron123','INSURED');
+
+1 row created.
+
+SQL> select * from accounts;
+
+ACCOUNT_NUMBER INSURED_NAME                   USER_NAME
+-------------- ------------------------------ --------------------
+    2010414416 Michael                        David
+
+SQL>  insert into accounts values(account_number_seq.nextval,'Anderson','David');
+
+1 row created.
+
+SQL> insert into user_role values('Brian','Brian123','CLAIM HANDLER');
+
+1 row created.
+
+SQL> select * from user_role;
+
+USER_NAME            PASSWORD     ROLE_CODE
+-------------------- ------------ --------------------
+Steve                Steve123     CLAIM ADJUSTER
+Michael              Michael123   INSURED
+David                David123     CLAIM HANDLER
+Anderson             Anderson123  INSURED
+Harden               Harden123    INSURED
+Diksha               Diksha123    INSURED
+Lebron               Lebron123    INSURED
+Brian                Brian123     CLAIM HANDLER
+
+8 rows selected.
+
+SQL> select * from accounts;
+
+ACCOUNT_NUMBER INSURED_NAME                   USER_NAME
+-------------- ------------------------------ --------------------
+    2010414416 Michael                        David
+    2010414417 Anderson                       David
+
+SQL>  insert into accounts values(account_number_seq.nextval,'Harden','David');
+
+1 row created.
+
+SQL>  insert into accounts values(account_number_seq.nextval,'Diksha','Brian');
+
+1 row created.
+
+SQL>  insert into accounts values(account_number_seq.nextval,'Lebron','Brian');
+
+1 row created.
+
+SQL> select * from accounts;
+
+ACCOUNT_NUMBER INSURED_NAME                   USER_NAME
+-------------- ------------------------------ --------------------
+    2010414416 Michael                        David
+    2010414417 Anderson                       David
+    2010414418 Harden                         David
+    2010414419 Diksha                         Brian
+    2010414420 Lebron                         Brian
+
+SQL> insert into policy values(policy_number_seq.nextval,'AUTOMOBILE',25000,2010414417);
+
+1 row created.
+
+SQL> insert into policy values(policy_number_seq.nextval,'MEDICAL',25000,2010414418);
+
+1 row created.
+
+SQL> insert into policy values(policy_number_seq.nextval,'MEDICAL',45000,2010414419);
+
+1 row created.
+
+SQL> insert into policy values(policy_number_seq.nextval,'AUTOMOBILE',35000,2010414420);
+
+1 row created.
+
+SQL> select * from policy;
+
+POLICY_NUMBER POLICY_TYPE          POLICY_PREMIUM ACCOUNT_NUMBER
+------------- -------------------- -------------- --------------
+        10001 AUTOMOBILE                    25000     2010414416
+        10002 AUTOMOBILE                    25000     2010414417
+        10003 MEDICAL                       25000     2010414418
+        10004 MEDICAL                       45000     2010414419
+        10005 AUTOMOBILE                    35000     2010414420
+
+SQL> desc claim_questions;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ QUES_ID                                   NOT NULL NUMBER(10)
+ POLICY_TYPE                                        VARCHAR2(20)
+ QUES_DESC                                          VARCHAR2(80)
+ QUES_ANS1                                          VARCHAR2(30)
+ QUES_ANS2                                          VARCHAR2(30)
+
+SQL> select * from claim_questions;
+
+no rows selected
+
+SQL> insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Are you the registered owner of the vehicle?','yes','no');
+
+1 row created.
+
+SQL> insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Do you have the desired bills?','yes','no');
+
+1 row created.
+
+SQL> insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Was the police report taken?','yes','no');
+
+1 row created.
+
+SQL> insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Do you want full claim amount reimbursement?','yes','no');
+
+1 row created.
+
+SQL> insert into claim_questions values(question_number_seq.nextval,'MEDICAL','Do want any special assistance at the time of emergency?','yes','no');
+
+1 row created.
+
+SQL> insert into claim_questions values(question_number_seq.nextval,'MEDICAL','Was the police verification done in hospital?','yes','no');
+
+1 row created.
+
+SQL>  insert into claim_questions values(question_number_seq.nextval,'MEDICAL','Do you have the desired bills?','yes','no');
+
+1 row created.
+
+SQL> insert into claim_questions values(question_number_seq.nextval,'MEDICAL','Do you want full claim amount reimbursement?','yes','no');
+
+1 row created.
+
+SQL> select * from claim_questions;
+
+   QUES_ID POLICY_TYPE
+---------- --------------------
+QUES_DESC
+--------------------------------------------------------------------------------
+QUES_ANS1                      QUES_ANS2
+------------------------------ ------------------------------
+        11 AUTOMOBILE
+Are you the registered owner of the vehicle?
+yes                            no
+
+        12 AUTOMOBILE
+Do you have the desired bills?
+yes                            no
+
+   QUES_ID POLICY_TYPE
+---------- --------------------
+QUES_DESC
+--------------------------------------------------------------------------------
+QUES_ANS1                      QUES_ANS2
+------------------------------ ------------------------------
+
+        13 AUTOMOBILE
+Was the police report taken?
+yes                            no
+
+        14 AUTOMOBILE
+Do you want full claim amount reimbursement?
+
+   QUES_ID POLICY_TYPE
+---------- --------------------
+QUES_DESC
+--------------------------------------------------------------------------------
+QUES_ANS1                      QUES_ANS2
+------------------------------ ------------------------------
+yes                            no
+
+        15 MEDICAL
+Do want any special assistance at the time of emergency?
+yes                            no
+
+        16 MEDICAL
+
+   QUES_ID POLICY_TYPE
+---------- --------------------
+QUES_DESC
+--------------------------------------------------------------------------------
+QUES_ANS1                      QUES_ANS2
+------------------------------ ------------------------------
+Was the police verification done in hospital?
+yes                            no
+
+        17 MEDICAL
+Do you have the desired bills?
+yes                            no
+
+
+   QUES_ID POLICY_TYPE
+---------- --------------------
+QUES_DESC
+--------------------------------------------------------------------------------
+QUES_ANS1                      QUES_ANS2
+------------------------------ ------------------------------
+        18 MEDICAL
+Do you want full claim amount reimbursement?
+yes                            no
+
+
+8 rows selected.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> desc policy_details;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ POLICY_NUMBER                                      NUMBER(10)
+ CLAIM_NUMBER                                       NUMBER(10)
+ QUESTION_ID                                        NUMBER(10)
+ ANSWER                                             VARCHAR2(30)
+
+SQL> drop table policy_details;
+
+Table dropped.
+
+SQL> create table policy_details (policy_number number(10),question_id number(10), answer varchar2(30),constraint fk_policy_number FOREIGN KEY (policy_number) REFERENCES policy(policy_number));
+
+Table created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL>
